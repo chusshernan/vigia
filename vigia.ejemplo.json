@@ -1,0 +1,139 @@
+{
+  "_leeme": "Ajustes del Vigía. Cópialo a vigia.json y ajústalo. Aquí no van contraseñas: esas van en el fichero de credenciales (ver README.md).",
+  "nombre": "Mi Radio",
+  "credenciales": {
+    "linux": "~/.config/vigia/credenciales.env",
+    "windows": "%APPDATA%\\Vigia\\credenciales.env"
+  },
+  "datos": "datos",
+  "copiar_panel_a": "",
+  "avisos": {
+    "_leeme": "activos=false: los avisos se apuntan en el historial pero no se mandan (para pruebas). modo todos = por todos los canales (WhatsApp para enterarse, Telegram con botones para actuar); primero = solo por el primero que funcione.",
+    "activos": false,
+    "modo": "todos",
+    "whatsapp_nombre": "Radio",
+    "canales": [
+      "whatsapp",
+      "telegram"
+    ],
+    "severidad_minima": "media",
+    "recordar_cada_horas": 6,
+    "max_por_hora": 15
+  },
+  "_roles": "central = este ordenador, centro de operaciones: recoge todo, panel e historial completos, órdenes. centinela = el ordenador de la radio, siempre encendido: vigila y avisa al móvil en tiempo real (también los ataques) y atiende los botones de Telegram. Intervalo 0 = ese módulo no corre en esa máquina.",
+  "rol_por_defecto": "central",
+  "roles": {
+    "central": {
+      "intervalos_minutos": {
+        "web": 0,
+        "stream": 0,
+        "silencio": 0,
+        "equipo": 0,
+        "logs": 5,
+        "ficheros": 30,
+        "centinela": 1
+      }
+    },
+    "centinela": {
+      "intervalos_minutos": {
+        "web": 2,
+        "stream": 2,
+        "silencio": 10,
+        "equipo": 1,
+        "logs": 3,
+        "ficheros": 0,
+        "centinela": 0
+      },
+      "puerto": 8790
+    }
+  },
+  "centinela": {
+    "_leeme": "Dirección del ordenador de la radio en la red (la dice el instalador al terminar). El token es la contraseña entre los dos; tiene que ser igual en ambos. Genera uno con: python3 -c \"import secrets; print(secrets.token_urlsafe(24))\"",
+    "url": "",
+    "token": ""
+  },
+  "bloqueo": {
+    "_leeme": "Bloqueo de IPs desde Telegram (/bloquear) o desde aquí (--orden). Lo aplica el mu-plugin wp/aa-vigia-bloqueos.php con el usuario «vigia» (suscriptor) de WordPress. El mismo plugin le deja al centinela leer los logs, así que el ordenador de la radio no necesita FTP.",
+    "dias": 7
+  },
+  "web": {
+    "url": "https://example.com/",
+    "dominio": "example.com",
+    "ip_esperada": "203.0.113.10",
+    "marcas_obligatorias": [
+      "Mi Radio",
+      "</html>"
+    ],
+    "tamano_minimo_bytes": 20000,
+    "lenta_segundos": 5,
+    "certificado_aviso_dias": 14,
+    "api": "https://example.com/wp-json/"
+  },
+  "stream": {
+    "url": "https://stream.example.com/listen/mi_radio/radio.mp3",
+    "api_azuracast": "https://stream.example.com/api/nowplaying/mi_radio",
+    "kbps": 320,
+    "segundos_muestra": 5,
+    "silencio": {
+      "_leeme": "Necesita ffmpeg. Escucha unos segundos del directo y mira si hay silencio.",
+      "activo": true,
+      "ffmpeg": "ffmpeg",
+      "segundos_escucha": 25,
+      "umbral_db": -50,
+      "segundos_silencio": 15
+    }
+  },
+  "logs": {
+    "carpeta": "logs/example.com",
+    "acceso": "access_ssl_log",
+    "acceso_rotado": "access_ssl_log.processed",
+    "errores": "error_log",
+    "errores_rotado": "error_log.1.gz",
+    "sensor": {
+      "_leeme": "El centinela no lee los logs de Apache (en hosting compartido el PHP no puede): lee los del sensor del mu-plugin, que apunta lo que pasa por WordPress.",
+      "acceso": "sensor-acceso.log",
+      "acceso_rotado": "sensor-acceso.log.1",
+      "errores": "sensor-errores.log",
+      "errores_rotado": "sensor-errores.log.1"
+    },
+    "ips_de_confianza": [
+      "203.0.113.10"
+    ],
+    "ventana_minutos": 60,
+    "umbrales": {
+      "login_por_ip": 10,
+      "login_total": 40,
+      "sensibles_por_ip": 3,
+      "inyeccion_por_ip": 2,
+      "peticiones_por_ip": 600,
+      "errores_5xx": 15,
+      "errores_php_por_hora": 100
+    }
+  },
+  "ficheros": {
+    "_leeme": "Carpetas del FTP que se vigilan. Cualquier cambio se compara con la última foto aceptada (--aceptar-ficheros).",
+    "raiz": "example.com",
+    "carpetas": [
+      "",
+      "wp-content/mu-plugins",
+      "wp-content/uploads",
+      "wp-content/uploads/{anio}/{mes}"
+    ],
+    "criticos": [
+      "wp-config.php",
+      ".htaccess",
+      "index.php",
+      "wp-login.php"
+    ]
+  },
+  "equipo": {
+    "_leeme": "Solo en Windows (el ordenador de la radio). Nombres tal como salen en el Administrador de tareas.",
+    "procesos": [
+      {
+        "proceso": "ZaraRadio.exe",
+        "nombre": "ZaraRadio"
+      }
+    ],
+    "disco_minimo_gb": 5
+  }
+}
